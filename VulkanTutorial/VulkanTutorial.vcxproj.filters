@@ -16,15 +16,21 @@
     <Filter Include="소스 파일\Shader">
       <UniqueIdentifier>{4c69c1f9-0204-4b4d-9667-611ec2754ab6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="미리 컴파일된 헤더">
+      <UniqueIdentifier>{e1bfebd0-2bcd-47bd-8eae-5015205f701b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="VulkanTutorial.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\HelloTriangleApplication.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\Helpers.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>미리 컴파일된 헤더</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VulkanTutorial.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -34,6 +40,9 @@
     </ClInclude>
     <ClInclude Include="src\Helpers.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stdafx.h">
+      <Filter>미리 컴파일된 헤더</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -52,5 +61,20 @@
     <CopyFileToFolders Include="src\Shader\Triangle.vert.spv">
       <Filter>소스 파일\Shader</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="src\Shader\Basic.frag">
+      <Filter>소스 파일\Shader</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="src\Shader\Basic.vert">
+      <Filter>소스 파일\Shader</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="src\Shader\Basic.frag.spv">
+      <Filter>소스 파일\Shader</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="src\Shader\Basic.vert.spv">
+      <Filter>소스 파일\Shader</Filter>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

@@ -1,8 +1,10 @@
+#include "stdafx.h"
 #include "Helpers.h"
 
 bool QueueFamilyIndices::isComplete()
 {
-    return graphicsFamiliy.has_value() && presentFamily.has_value();
+	return graphicsFamiliy.has_value() && presentFamily.has_value()
+		&& transferFamily.has_value();
 }
 
 std::vector<char> readFile(const std::string& filename)

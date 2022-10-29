@@ -1,4 +1,6 @@
-﻿#include "src/HelloTriangleApplication.h"
+﻿#include "stdafx.h"
+
+#include "HelloTriangleApplication.h"
 
 int main()
 {

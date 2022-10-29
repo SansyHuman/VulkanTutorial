@@ -1,31 +1,49 @@
 #pragma once
 
-#define VK_USE_PLATFORM_WIN32_KHR
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include <GLFW/glfw3native.h>
-
-#ifndef VULKAN_HPP_NO_NODISCARD_WARNINGS
-#define VULKAN_HPP_NO_NODISCARD_WARNINGS
-#endif
-#ifndef VULKAN_HPP_NO_TO_STRING
-#define VULKAN_HPP_NO_TO_STRING
-#endif
-
-#include <vulkan/vulkan.hpp>
-#include <vulkan/vulkan_raii.hpp>
-
-#include <fstream>
-#include <iostream>
-#include <stdexcept>
-#include <cstdlib>
-#include <vector>
+#include "stdafx.h"
 
 #include "Helpers.h"
 
+struct Vertex
+{
+	glm::vec2 pos;
+	glm::vec3 color;
 
+	static vk::VertexInputBindingDescription getBindingDescription()
+	{
+		vk::VertexInputBindingDescription bindingDescription(0, sizeof(Vertex), vk::VertexInputRate::eVertex);
+
+		return bindingDescription;
+	}
+
+	static std::array<vk::VertexInputAttributeDescription, 2> getAttributeDescriptions()
+	{
+		std::array<vk::VertexInputAttributeDescription, 2> attributeDescriptions = {
+			vk::VertexInputAttributeDescription(0, 0, vk::Format::eR32G32Sfloat, offsetof(Vertex, pos)),
+			vk::VertexInputAttributeDescription(1, 0, vk::Format::eR32G32B32Sfloat, offsetof(Vertex, color))
+		};
+
+		return attributeDescriptions;
+	}
+};
+
+struct UniformBufferObject
+{
+	glm::mat4 model;
+	glm::mat4 view;
+	glm::mat4 proj;
+};
+
+const std::vector<Vertex> vertices = {
+	{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+	{{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
+	{{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
+	{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+};
+
+const std::vector<uint16_t> indices = {
+	0, 1, 2, 0, 2, 3
+};
 
 class HelloTriangleApplication
 {
@@ -42,6 +60,7 @@ private:
 
 	vk::raii::Queue graphicsQueue;
 	vk::raii::Queue presentQueue;
+	vk::raii::Queue transferQueue;
 
 	vk::raii::SwapchainKHR swapChain;
 	std::vector<vk::Image> swapChainImages;
@@ -49,6 +68,7 @@ private:
 	std::vector<vk::raii::Framebuffer> swapChainFramebuffers;
 
 	vk::raii::RenderPass renderPass;
+	vk::raii::DescriptorSetLayout descriptorSetLayout;
 	vk::raii::PipelineLayout pipelineLayout;
 	vk::raii::Pipeline graphicsPipeline;
 
@@ -56,6 +76,18 @@ private:
 
 	vk::raii::CommandPool commandPool;
 	vk::raii::CommandBuffers commandBuffers;
+	vk::raii::CommandPool transferPool;
+	vk::raii::CommandBuffer transferBuffer;
+
+	vk::raii::Buffer vertexBuffer;
+	vk::raii::DeviceMemory vertexBufferMemory;
+	vk::raii::Buffer indexBuffer;
+	vk::raii::DeviceMemory indexBufferMemory;
+	std::vector<vk::raii::Buffer> uniformBuffers;
+	std::vector<vk::raii::DeviceMemory> uniformBuffersMemory;
+
+	vk::raii::DescriptorPool descriptorPool;
+	vk::raii::DescriptorSets descriptorSets;
 
 	std::vector<vk::raii::Semaphore> imageAvailableSemaphores;
 	std::vector<vk::raii::Semaphore> renderFinishedSemaphores;
@@ -92,6 +124,8 @@ public:
 
 private:
 	void drawFrame();
+
+	void updateUniformBuffer(uint32_t currentImage);
 	void recordCommandBuffer(vk::raii::CommandBuffer& commandBuffer, uint32_t imageIndex);
 
 	void cleanupSwapChain();
@@ -127,10 +161,26 @@ private:
 
 	void createGraphicsPipeline();
 	vk::raii::ShaderModule createShaderModule(const std::vector<char>& code);
+	void createDescriptorSetLayout();
 
 	void createFramebuffers();
 
 	void createCommandPool();
+
+	void createVertexBuffer();
+	void createIndexBuffer();
+	void createUniformBuffer();
+	void createDescriptorPool();
+	void createDescriptorSets();
+	uint32_t findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties);
+	void createBuffer(
+		vk::DeviceSize size, vk::BufferUsageFlags usage,
+		vk::SharingMode sharingMode,
+		vk::ArrayProxyNoTemporaries<const uint32_t> const& queueFamilyIndices,
+		vk::MemoryPropertyFlags properties,
+		vk::raii::Buffer& buffer, vk::raii::DeviceMemory& bufferMemory);
+	void copyBuffer(vk::raii::Buffer& srcBuffer, vk::raii::Buffer& dstBuffer, vk::DeviceSize size);
+
 	void createCommandBuffer();
 
 	void createSyncObjects();

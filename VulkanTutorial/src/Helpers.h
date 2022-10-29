@@ -1,14 +1,12 @@
 #pragma once
 
-#include <cstdint>
-#include <optional>
-#include <fstream>
-#include <vulkan/vulkan.hpp>
+#include "stdafx.h"
 
 struct QueueFamilyIndices
 {
 	std::optional<uint32_t> graphicsFamiliy;
 	std::optional<uint32_t> presentFamily;
+	std::optional<uint32_t> transferFamily;
 
 	bool isComplete();
 };
